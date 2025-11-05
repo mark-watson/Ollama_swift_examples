@@ -1,5 +1,9 @@
 # Running local LLMs using Ollama
 
+Example from my book "Artificial Intelligence Using Swift"
+
+You can read my book for free online at: https://leanpub.com/SwiftAI/read
+
 Here, I decided to not write a new client library since there are several good ones already written.
 
 This is not a strong recommendation of one library over another, but I enjoy using the following project:

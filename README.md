@@ -1,21 +1,41 @@
-# Running local LLMs using Ollama
+# Running local LLMs using Ollama (Swift 6 Edition)
 
-Example from my book "Artificial Intelligence Using Swift"
+This project demonstrates how to interact with local LLMs using [Ollama](https://ollama.com) and the [ollama-swift](https://github.com/mattt/ollama-swift) library, updated for **Swift 6** and modern concurrency practices.
 
-You can read my book for free online at: https://leanpub.com/SwiftAI/read
+## Modern Swift Features Used
+- **Swift 6**: Full strict concurrency checking enabled.
+- **Actors**: The `OllamaService` is implemented as an `actor` to ensure thread-safe access to the Ollama client.
+- **Swift Testing**: Migrated from XCTest to the modern `Testing` framework.
+- **Async/Await**: Comprehensive use of structured concurrency for both standard and streaming responses.
 
-Here, I decided to not write a new client library since there are several good ones already written.
+## Prerequisites
+- [Ollama](https://ollama.com) installed and running.
+- A model downloaded (defaults to `llama3.2:latest`).
 
-This is not a strong recommendation of one library over another, but I enjoy using the following project:
+## Usage
 
-    https://github.com/mattt/ollama-swift
+```swift
+import Ollama_swift_examples
+import Ollama
 
+let service = OllamaService(model: "llama3.2:latest")
+
+// Simple chat
+let response = try await service.chat(messages: [.user("Hello!")])
+
+// Streaming chat
+for try await fragment in service.chatStream(messages: [.user("Tell a story")]) {
+    print(fragment, terminator: "")
+}
+```
 
 ## Running the examples
 
-All of the examples are packaged as Swift tests:
+Tests are written using the new Swift Testing framework:
 
-    swift test
+```bash
+swift test
+```
 
 
 ## Book Cover Material, Copyright, and License

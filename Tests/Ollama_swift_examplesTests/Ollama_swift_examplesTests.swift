@@ -1,17 +1,36 @@
-import XCTest
+import Testing
 import Ollama
+@testable import Ollama_swift_examples
 
-final class Ollama_swift_examplesTests: XCTestCase {
-    let text1 = "If Mary is 42, Bill is 27, and Sam is 51, what are their pairwise age differences."
-    let client = Ollama.Client.default // http://localhost:11434 endpoint
-    func testExample() async throws {
-      let response = try await client.chat(
-        model: "llama3.2:latest",
-        messages: [
-            .system("You are a helpful assistant who completes text and also answers questions. You are always concise."),
-            .user("What is the capital of Germany?"),
-            .user("what if Sam is 52?")
-        ])
-        print(response.message.content)
+@Suite("Ollama Service Tests")
+@MainActor
+struct OllamaServiceTests {
+    let service = OllamaService(model: "qwen3:1.7b")
+
+    @Test("Basic Chat Functionality")
+    func testBasicChat() async throws {
+        let messages: [Ollama.Chat.Message] = [
+            .system("You are a helpful assistant."),
+            .user("What is the capital of Germany?")
+        ]
+        
+        let response = try await service.chat(messages: messages)
+        #expect(!response.isEmpty)
+        print("Response: \(response)")
+    }
+
+    @Test("Streaming Chat Functionality")
+    func testStreamingChat() async throws {
+        let messages: [Ollama.Chat.Message] = [
+            .user("Tell me a very short joke.")
+        ]
+        
+        var fullResponse = ""
+        for try await fragment in await service.chatStream(messages: messages) {
+            fullResponse += fragment
+        }
+        
+        #expect(!fullResponse.isEmpty)
+        print("Streaming Response: \(fullResponse)")
     }
 }
